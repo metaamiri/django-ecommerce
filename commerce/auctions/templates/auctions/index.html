@@ -6,7 +6,7 @@
     <div class="card-container">
         {% for listing in listings %}
             <div class="card">
-                <a href="#" class="card-link">
+                <a href="{% url 'auctions:listing_page' listing.id %}" class="card-link">
                     <img src="{% static 'auctions/img.png' %}" alt="listing image">
                     <div class="card-content">
                         <h3>{{listing.title}}</h3>

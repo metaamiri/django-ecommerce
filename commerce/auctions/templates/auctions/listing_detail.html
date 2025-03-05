@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block title %}{{listing.title}}{% endblock %}
+
+{% block body %}
+    <h2>{{ listing.title }}</h2>
+    <p><strong>Created by:</strong> {{ listing.user }}</p>
+    <p><strong>Category:</strong> {% for category in listing.categories.all %}{{ category.name }} {% endfor %}</p>
+    <p><strong>Description:</strong> {{ listing.description }}</p>
+    <p><strong>Current Price:</strong> ${{ current_price.bid|default:listing.price.first.bid }}</p>
+    <!-- <img src="{% static 'auctions/img.png' %}" alt="listing image"> -->
+
+    {% if user.is_authenticated %}
+        <!-- Watchlist Button -->
+        <!-- <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="watchlist">
+                {% if in_watchlist %}Remove from Watchlist{% else %}Add to Watchlist{% endif %}
+            </button>
+        </form> -->
+
+        <!-- Bidding Form -->
+        <form method="post">
+            {% csrf_token %}
+            <input type="number" name="bid_amount" step="0.01" min="1" required>
+            <button type="submit" name="bid">Place Bid</button>
+        </form>
+
+        <!-- Close Auction (Only for Owner) -->
+        {% if is_owner and listing.active %}
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="close_auction">Close Auction</button>
+            </form>
+        {% endif %}
+
+        <!-- Winner Announcement -->
+        {% if not listing.active and user == current_price.user %}
+            <p><strong>Congratulations! You won this auction.</strong></p>
+        {% endif %}
+
+        <!-- Comment Section -->
+        <h3>Comments:</h3>
+        {% for comment in comments %}
+            <p><strong>{{ comment.user }}</strong>: {{ comment.comment }}</p>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+        <!-- Add Comment Form -->
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="comment" required></textarea>
+            <button type="submit">Add Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'auctions:login' %}">Log in</a> to place bids, add to watchlist, or comment.</p>
+    {% endif %}
+
+{% endblock %}
