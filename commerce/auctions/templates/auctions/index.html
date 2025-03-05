@@ -1,7 +1,20 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-
-    TODO
+    <h2 class="auctions-head">Active Listings</h2>
+    <div class="card-container">
+        {% for listing in listings %}
+            <div class="card">
+                <a href="#" class="card-link">
+                    <img src="{% static 'auctions/img.png' %}" alt="listing image">
+                    <div class="card-content">
+                        <h3>{{listing.title}}</h3>
+                        <p class="description">{{listing.description}}</p>
+                        <p>Current Price : {{listing.price.last.bid}}</p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
