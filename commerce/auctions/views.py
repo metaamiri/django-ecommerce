@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from .models import *
 
+import json
 
 def index(request):
     context = {"listings": Listing.objects.all()}
@@ -17,18 +18,10 @@ def listing_page(request, listing_id):
     current_price = listing.price.last().bid  # Get the highest bid
     comments = listing.comments.all()
     is_owner = request.user == listing.user
-    # in_watchlist = request.user.is_authenticated and request.user.watchlist.filter(id=listing.id).exists()
+    in_watchlist = request.user.is_authenticated and request.user.watchlist.filter(id=listing.id).exists()
+
     
     if request.method == "POST":
-        # if "watchlist" in request.POST:
-        #     if in_watchlist:
-        #         request.user.watchlist.remove(listing)
-        #         messages.success(request, "Removed from Watchlist")
-        #     else:
-        #         request.user.watchlist.add(listing)
-        #         messages.success(request, "Added to Watchlist")
-        #     return redirect("auctions/listing_detail.html", listing_id=listing.id)
-        
         if "bid" in request.POST:
             if request.user.is_authenticated:
                 bid_amount = float(request.POST.get("bid_amount"))
@@ -59,7 +52,36 @@ def listing_page(request, listing_id):
         "current_price": current_price,
         "comments": comments,
         "is_owner": is_owner,
+        "in_watchlist": in_watchlist,
     })
+
+
+@login_required
+def change_watchlist(request):
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+        try:
+            listing = Listing.objects.get(id=data['listing_id'])
+            if listing in request.user.watchlist.all():
+                
+                # request.user.watchlist.remove()
+                return JsonResponse({'status': 'removed'})
+            else:
+               
+                watchlist = Watchlist(user=request.user, listing=listing)
+                print("created")
+                request.user.watchlist.add(watchlist)
+                print("added")
+                return JsonResponse({'status': 'added'})
+        
+        except Exception:
+            messages.error(request, "Listsing not found.")
+            return render(request, "auctions/index.html")
+    else:
+         return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
 
 def login_view(request):
     if request.method == "POST":
@@ -108,6 +130,6 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("auctions:index"))
     else:
         return render(request, "auctions/register.html")

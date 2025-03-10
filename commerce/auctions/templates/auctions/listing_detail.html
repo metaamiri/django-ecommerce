@@ -5,21 +5,30 @@
 
 {% block body %}
     <div class="container">
-        <img src="{% static 'auctions/img.png' %}" alt="listing image">
-        <h2>{{ listing.title }}</h2>
-        <p><strong>Created by:</strong> {{ listing.user }}</p>
-        <p><strong>Category:</strong> {% for category in listing.categories.all %}{{ category.name }} {% endfor %}</p>
-        <p><strong>Description:</strong> {{ listing.description }}</p>
-        <p><strong>Current Price:</strong> ${{ current_price.bid|default:listing.price.first.bid }}</p>
+        <div class="listing-details" >
+            <div class="listing-head" >
+                <img src="{{listing.image_url}}" alt="listing image">
+                {% if user.is_authenticated %}
+                    <button id="watchlist-btn" data-listing="{{ listing.id }}" type="submit" class="btn btn-success">{% if in_watchlist %}Remove from Watchlist{% else %} Add to Watchlist {% endif %}</button>
+                {% endif %}
+            </div>
+            
+            <h2>{{ listing.title }}</h2>
+            <p><strong>Created by:</strong> {{ listing.user }}</p>
+            <p><strong>Category:</strong> {% for category in listing.categories.all %}{{ category.name }} {% endfor %}</p>
+            <p><strong>Description:</strong> {{ listing.description }}</p>
+            <p><strong>Current Price:</strong> ${{ current_price.bid|default:listing.price.last.bid }}</p>
+        </div>
+        
         
         {% if user.is_authenticated %}
             <!-- Watchlist Button -->
-            <!-- <form method="post">
+            <form method="post">
                 {% csrf_token %}
                 <button type="submit" name="watchlist">
                     {% if in_watchlist %}Remove from Watchlist{% else %}Add to Watchlist{% endif %}
                 </button>
-            </form> -->
+            </form>
 
             <!-- Bidding Form -->
             <form method="post">
@@ -61,6 +70,27 @@
 
     </div>
    
-
+    <script>
+        document.getElementById('watchlist-btn').addEventListener('click', function() {
+            const listingId = this.dataset.listing;
+        
+            fetch('/change-watchlist/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ 'listing_id': listingId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    this.innerText = 'Remove from Watchlist';
+                } else {
+                    this.innerText = 'Add to Watchlist';
+                }
+            });
+        });
+        </script>
     
 {% endblock %}

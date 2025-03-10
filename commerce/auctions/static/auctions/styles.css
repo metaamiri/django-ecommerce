@@ -80,3 +80,9 @@ body {
     height: 1.5em; /* Adjust based on line height */
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
 }
+
+.listing-head {
+    display: flex; /* فعال کردن Flexbox */
+    align-items: center; /* مرکز کردن آیتم‌ها به صورت عمودی */
+    justify-content: space-between; /* فاصله بین عکس و دکمه */
+}

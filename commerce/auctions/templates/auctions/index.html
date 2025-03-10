@@ -2,12 +2,15 @@
 {% load static %}
 
 {% block body %}
+    {% if message in messages %}
+            {{message}}
+    {% endif %}
     <h2 class="auctions-head">Active Listings</h2>
     <div class="card-container">
         {% for listing in listings %}
             <div class="card">
                 <a href="{% url 'auctions:listing_page' listing.id %}" class="card-link">
-                    <img src="{% static 'auctions/img.png' %}" alt="listing image">
+                    <img src="{{listing.image_url}}" alt="listing image">
                     <div class="card-content">
                         <h3>{{listing.title}}</h3>
                         <p class="description">{{listing.description}}</p>
