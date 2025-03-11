@@ -9,7 +9,7 @@
             <div class="listing-head" >
                 <img src="{{listing.image_url}}" alt="listing image">
                 {% if user.is_authenticated %}
-                    <button id="watchlist-btn" data-listing="{{ listing.id }}" type="submit" class="btn btn-success">{% if in_watchlist %}Remove from Watchlist{% else %} Add to Watchlist {% endif %}</button>
+                    <button id="watchlist-btn" data-listing="{{ listing.id }}" type="submit" class="btn btn-success">{% if listing in watchlist %}Remove from Watchlist{% else %} Add to Watchlist {% endif %}</button>
                 {% endif %}
             </div>
             
@@ -22,13 +22,6 @@
         
         
         {% if user.is_authenticated %}
-            <!-- Watchlist Button -->
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" name="watchlist">
-                    {% if in_watchlist %}Remove from Watchlist{% else %}Add to Watchlist{% endif %}
-                </button>
-            </form>
 
             <!-- Bidding Form -->
             <form method="post">

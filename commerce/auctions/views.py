@@ -18,8 +18,8 @@ def listing_page(request, listing_id):
     current_price = listing.price.last().bid  # Get the highest bid
     comments = listing.comments.all()
     is_owner = request.user == listing.user
-    in_watchlist = request.user.is_authenticated and request.user.watchlist.filter(id=listing.id).exists()
-
+    if request.user.is_authenticated:
+        watchlist = Watchlist.objects.filter(user=request.user)
     
     if request.method == "POST":
         if "bid" in request.POST:
@@ -52,7 +52,7 @@ def listing_page(request, listing_id):
         "current_price": current_price,
         "comments": comments,
         "is_owner": is_owner,
-        "in_watchlist": in_watchlist,
+        "watchlist": watchlist,
     })
 
 
@@ -62,16 +62,15 @@ def change_watchlist(request):
 
         data = json.loads(request.body)
         try:
+            watchlist, created = Watchlist.objects.get_or_create(user=request.user)
             listing = Listing.objects.get(id=data['listing_id'])
-            if listing in request.user.watchlist.all():
-                
-                # request.user.watchlist.remove()
+
+            if listing in watchlist.listing.all():
+                watchlist.listing.remove(listing)
+                print("removed")
                 return JsonResponse({'status': 'removed'})
             else:
-               
-                watchlist = Watchlist(user=request.user, listing=listing)
-                print("created")
-                request.user.watchlist.add(watchlist)
+                watchlist.listing.add(listing)
                 print("added")
                 return JsonResponse({'status': 'added'})
         
