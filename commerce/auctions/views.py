@@ -35,7 +35,7 @@ def listing_page(request, listing_id):
                 else:
                     Price.objects.create(listing=listing, user=request.user, bid=bid_amount)
                     messages.success(request, "Bid placed successfully!")
-                return redirect("auctions/listing_detail.html", listing_id=listing.id)
+                return redirect("auctions:listing_page", listing_id=listing.id)
         
         elif "close_auction" in request.POST and is_owner:
             listing.active = False

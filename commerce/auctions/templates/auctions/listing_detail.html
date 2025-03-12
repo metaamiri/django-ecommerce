@@ -5,6 +5,18 @@
 
 {% block body %}
     <div class="container">
+        {% if messages %}
+        
+            <ul class="messages">
+                {% for message in messages %}
+                
+                <div class="alert {% if message.tags == error %}alert-warning{% else %}alert-success{% endif %}" role="alert">
+                    <li>{{ message }}</li>
+                </div>
+                {% endfor %}
+            </ul>
+       
+        {% endif %}
         <div class="listing-details" >
             <div class="listing-head" >
                 <img src="{{listing.image_url}}" alt="listing image">
@@ -29,9 +41,9 @@
                 {% csrf_token %}
                 <div class="form-group mx-sm-3 mb-2">
                   <label for="inputPassword2" class="sr-only">Bid</label>
-                  <input type="text" class="form-control" placeholder="place your bid" name="bid" required>
+                  <input type="text" class="form-control" placeholder="place your bid" name="bid_amount" required>
                 </div>
-                <button type="submit" class="btn btn-primary mb-2">Confirm</button>
+                <button type="submit" class="btn btn-primary mb-2" name="bid">Confirm</button>
             </form>
 
             <!-- Close Auction (Only for Owner) -->
