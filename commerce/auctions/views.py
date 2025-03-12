@@ -19,7 +19,10 @@ def listing_page(request, listing_id):
     comments = listing.comments.all()
     is_owner = request.user == listing.user
     if request.user.is_authenticated:
-        watchlist = Watchlist.objects.filter(user=request.user)
+        watchlist, created = Watchlist.objects.get_or_create(user=request.user)
+        watchlist = watchlist.listing.all()
+    else:
+        watchlist = None
     
     if request.method == "POST":
         if "bid" in request.POST:

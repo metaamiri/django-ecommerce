@@ -86,3 +86,23 @@ body {
     align-items: center; /* مرکز کردن آیتم‌ها به صورت عمودی */
     justify-content: space-between; /* فاصله بین عکس و دکمه */
 }
+
+.watchlist-btn{
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 20px;
+    border-style: none;
+    backface-visibility: hidden;
+    border-width: 0;
+}
+.watchlist-btn:hover{
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+.in-watchlist{
+    background-color: #ff0000;
+    
+}
+.not-in-watchlist{
+    background-color: green;
+}

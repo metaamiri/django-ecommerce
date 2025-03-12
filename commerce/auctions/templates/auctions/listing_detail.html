@@ -9,7 +9,8 @@
             <div class="listing-head" >
                 <img src="{{listing.image_url}}" alt="listing image">
                 {% if user.is_authenticated %}
-                    <button id="watchlist-btn" data-listing="{{ listing.id }}" type="submit" class="btn btn-success">{% if listing in watchlist %}Remove from Watchlist{% else %} Add to Watchlist {% endif %}</button>
+                    <button id="watchlist-btn" data-listing="{{ listing.id }}" class="btn watchlist-btn {% if listing in watchlist %}in-watchlist{% else %}not-in-watchlist{% endif %}" type="submit">{% if listing in watchlist %}Remove from Watchlist{% else %} Add to Watchlist {% endif %}</button>
+                    
                 {% endif %}
             </div>
             
@@ -24,10 +25,13 @@
         {% if user.is_authenticated %}
 
             <!-- Bidding Form -->
-            <form method="post">
+            <form class="form-inline" method="post">
                 {% csrf_token %}
-                <input type="number" name="bid_amount" step="0.01" min="1" required>
-                <button type="submit" name="bid">Place Bid</button>
+                <div class="form-group mx-sm-3 mb-2">
+                  <label for="inputPassword2" class="sr-only">Bid</label>
+                  <input type="text" class="form-control" placeholder="place your bid" name="bid" required>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Confirm</button>
             </form>
 
             <!-- Close Auction (Only for Owner) -->
@@ -79,8 +83,12 @@
             .then(data => {
                 if (data.status === 'added') {
                     this.innerText = 'Remove from Watchlist';
+                    this.style.backgroundColor = 'red';
+                    this.blur();
                 } else {
                     this.innerText = 'Add to Watchlist';
+                    this.style.backgroundColor = 'green';
+                    this.blur();
                 }
             });
         });
