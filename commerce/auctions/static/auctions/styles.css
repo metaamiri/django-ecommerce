@@ -58,10 +58,6 @@ img{
     color: #777;
     margin-top: 5px;
 }
-.card-link .index-listing-price{
-    align-items: end;
-}
-
 
 .card-link:hover {
     transform: scale(1.05);

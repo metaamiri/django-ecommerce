@@ -58,6 +58,9 @@ def listing_page(request, listing_id):
         "watchlist": watchlist,
     })
 
+def watchlist(request):
+    watchlist = Watchlist.objects.get(user=request.user)
+    return render(request, "auctions/watchlist.html", {"watchlist": watchlist})
 
 @login_required
 def change_watchlist(request):
