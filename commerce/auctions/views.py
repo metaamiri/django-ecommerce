@@ -40,8 +40,8 @@ def listing_page(request, listing_id):
         elif "close_auction" in request.POST and is_owner:
             listing.active = False
             listing.save()
-            messages.success(request, "Auction closed.")
-            return redirect("auctions/listing_detail.html", listing_id=listing.id)
+            context= {"listing": listing, "winner": listing.price.last().user}
+            return render(request, "auctions/winner_page.html", context)
         
         elif "comment" in request.POST:
             comment_text = request.POST.get("comment")
@@ -82,7 +82,6 @@ def change_watchlist(request):
             return render(request, "auctions/index.html")
     else:
          return JsonResponse({'error': 'Invalid request'}, status=400)
-
 
 
 def login_view(request):

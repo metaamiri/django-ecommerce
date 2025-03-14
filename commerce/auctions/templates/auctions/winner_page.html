@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block titile %} Auction Winner {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2> Auction Winner </h2>
+        <div class="listing-details">
+            <p>The winner of {{listing.title}} auction is <strong>{{winner}}</strong> by price of ${{listing.price.last.bid}}</p>
+            <small>{{listing.title}} auction is no longer active</small>
+        </div>
+    </div>
+{% endblock %}
