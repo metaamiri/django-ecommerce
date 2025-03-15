@@ -17,6 +17,18 @@
             </ul>
        
         {% endif %}
+
+        {% if not listing.active %}
+            <div class="alert alert-info" role="alert">
+                This auction is closed.
+            </div>
+            <!-- Winner announcment -->
+            {% if listing.price.last.user == user %}
+                <div class="alert alert-success" role="alert">
+                    <strong> Congratulation ! you won the auction with a bid of ${{ current_price }}.</strong>
+                </div>
+            {% endif %}
+        {% endif %}
         <div class="listing-details" >
             <div class="listing-head" >
                 <img style="width: 250px;" src="{{listing.image_url}}" alt="listing image">
@@ -38,14 +50,21 @@
                     
                 {% endif %}
             </div>
-            
+            <!-- Listing details -->
             <h2>{{ listing.title }}</h2>
             <p><strong>Created by:</strong> {{ listing.user }}</p>
             <p><strong>Category:</strong> {% for category in listing.categories.all %}{{ category.name }} {% endfor %}</p>
             <p><strong>Description:</strong> {{ listing.description }}</p>
-            <p><strong>Current Price:</strong> ${{ current_price.bid|default:listing.price.last.bid }}</p>
+            {% if listing.active %}
+                <p><strong>Current Price:</strong> ${{ current_price|default:listing.price.last.bid }}</p>
+            {% else %}
+                <p><strong>Final Price:</strong> ${{ listing.price.last.bid }}</p>
+            {% endif %}
         </div>
         
+
+
+
         
         {% if user.is_authenticated %}
 
@@ -61,17 +80,12 @@
                 </form>
             {% endif %}
 
-            
-
-            <!-- Winner Announcement -->
-            {% if not listing.active and user == current_price.user %}
-                <p><strong>Congratulations! You won this auction.</strong></p>
-            {% endif %}
-
             <!-- Comment Section -->
             <h3>Comments:</h3>
             {% for comment in comments %}
-                <p><strong>{{ comment.user }}</strong>: {{ comment.comment }}</p>
+                <div>
+                    <p><strong>{{ comment.user }}</strong>: {{ comment.comment }}</p>
+                </div>
             {% empty %}
                 <p>No comments yet.</p>
             {% endfor %}

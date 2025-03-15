@@ -48,7 +48,7 @@ def listing_page(request, listing_id):
             if comment_text:
                 Comment.objects.create(listing=listing, user=request.user, comment=comment_text)
                 messages.success(request, "Comment added.")
-            return redirect("auctions/listing_detail.html", listing_id=listing.id)
+            return redirect("auctions:listing_page", listing_id=listing.id)
 
     return render(request, "auctions/listing_detail.html", {
         "listing": listing,
@@ -59,7 +59,7 @@ def listing_page(request, listing_id):
     })
 
 def watchlist(request):
-    watchlist = Watchlist.objects.get(user=request.user)
+    watchlist = Watchlist.objects.get(user=request.user).listing.all()
     return render(request, "auctions/watchlist.html", {"watchlist": watchlist})
 
 @login_required

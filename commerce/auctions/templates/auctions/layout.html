@@ -22,11 +22,13 @@
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:watchlist' %}">Watchlist <span class="watchlist-count">{{user.watchlist.last.listing.count}}</span></a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'auctions:logout' %}">Log Out</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'auctions:watchlist' %}">Watchlist</a>
-                </li>
+                
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'auctions:login' %}">Log In</a>
