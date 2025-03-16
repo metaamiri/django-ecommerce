@@ -18,6 +18,7 @@ def listing_page(request, listing_id):
     current_price = listing.price.last().bid  # Get the highest bid
     comments = listing.comments.all()
     is_owner = request.user == listing.user
+    
     if request.user.is_authenticated:
         watchlist, created = Watchlist.objects.get_or_create(user=request.user)
         watchlist = watchlist.listing.all()
@@ -86,6 +87,16 @@ def change_watchlist(request):
     else:
          return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, "auctions/categories.html", {"categories": categories})
+
+def category_listing(request, category_name):
+    category = Category.objects.get(name=category_name)
+    listings = category.listing.all()
+    # listings = Listing.objects.filter(categories=category)
+    return render(request, "auctions/category_listing.html", {"listings": listings, "category": category})
 
 def login_view(request):
     if request.method == "POST":

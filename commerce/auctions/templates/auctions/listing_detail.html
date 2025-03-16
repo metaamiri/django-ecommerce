@@ -53,12 +53,12 @@
             <!-- Listing details -->
             <h2>{{ listing.title }}</h2>
             <p><strong>Created by:</strong> {{ listing.user }}</p>
-            <p><strong>Category:</strong> {% for category in listing.categories.all %}{{ category.name }} {% endfor %}</p>
+            <p><strong>Category:</strong> {% for category in listing.categories.all %} <a href="{% url 'auctions:category_listings' category.name %}"> {{ category.name }} </a>  {% endfor %}</p>
             <p><strong>Description:</strong> {{ listing.description }}</p>
             {% if listing.active %}
                 <p><strong>Current Price:</strong> ${{ current_price|default:listing.price.last.bid }}</p>
             {% else %}
-                <p><strong>Final Price:</strong> ${{ listing.price.last.bid }}</p>
+                 <p><strong>Final Price:</strong> ${{ listing.price.last.bid }}</p>
             {% endif %}
         </div>
         
