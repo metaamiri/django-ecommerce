@@ -59,6 +59,28 @@ def listing_page(request, listing_id):
         "watchlist": watchlist,
     })
 
+def create_listing(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        image_url = request.POST.get("image_url")
+        first_bid = request.POST.get("first_bid")
+        category = request.POST.get("category")
+        print(category)
+
+        if not title or not description or not first_bid or not category:
+            messages.error(request, "Please fill all the required fields.")
+            return redirect("auctions:create_listing")
+        
+        listing = Listing.objects.create(user=request.user, title=title, description=description, image_url=image_url, first_bid=first_bid)
+        category = Category.objects.get(name=category)
+        listing.categories.add(category)
+        listing.save()
+        messages.success(request, "Listing created successfully.")
+        return redirect("auctions:listing_page", listing_id=listing.id)
+    else:
+        return render(request, "auctions/create_listing.html", {"categories": Category.objects.all()})
+
 def watchlist(request):
     watchlist = Watchlist.objects.get(user=request.user).listing.all()
     return render(request, "auctions/watchlist.html", {"watchlist": watchlist})
